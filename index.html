@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .task-item.completed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .task-item button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .task-input {
+            width: calc(100% - 42px);
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            font-size: 16px;
+        }
+
+        .add-button {
+            width: 40px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            cursor: pointer;
+        }
+
+        .reminder {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>To-Do List</h2>
+            <p id="dateTime"></p>
+        </div>
+        <div class="task-input-container">
+            <input type="text" id="taskInput" class="task-input" placeholder="Add a new task">
+            <button onclick="addTask()" class="add-button">Add</button>
+        </div>
+        <ul class="task-list" id="taskList">
+            <!-- Tasks will be added here -->
+        </ul>
+    </div>
+
+    <script>
+        function addTask() {
+            var taskInput = document.getElementById("taskInput");
+            var taskText = taskInput.value.trim();
+
+            if (taskText !== "") {
+                var taskList = document.getElementById("taskList");
+                var newTaskItem = document.createElement("li");
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.addEventListener('change', function () {
+                    newTaskItem.classList.toggle('completed', this.checked);
+                });
+                var taskTextNode = document.createTextNode(taskText);
+                var deleteButton = document.createElement("button");
+                deleteButton.innerText = "Delete";
+                deleteButton.addEventListener('click', function () {
+                    taskList.removeChild(newTaskItem);
+                });
+
+                newTaskItem.className = "task-item";
+                newTaskItem.appendChild(checkbox);
+                newTaskItem.appendChild(taskTextNode);
+                newTaskItem.appendChild(deleteButton);
+
+                // Add reminder
+                var reminder = document.createElement("span");
+                reminder.className = "reminder";
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                var timeString = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+                var dateString = now.toLocaleDateString();
+                reminder.innerText = "Added on " + dateString + " at " + timeString;
+                newTaskItem.appendChild(reminder);
+
+                taskList.appendChild(newTaskItem);
+
+                taskInput.value = ""; // Clear the input field after adding task
+            } else {
+                alert("Please enter a task!");
+            }
+        }
+
+        function updateDateTime() {
+            var now = new Date();
+            var dateTimeElement = document.getElementById("dateTime");
+            dateTimeElement.innerText = now.toLocaleString();
+        }
+
+        // Update date and time every second
+        setInterval(updateDateTime, 1000);
+
+        // Initialize date and time
+        updateDateTime();
+    </script>
+</body>
+
+</html>
